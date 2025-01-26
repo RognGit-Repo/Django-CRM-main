@@ -44,7 +44,7 @@
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to Cart</a></div>
+                                <div class="text-center"><button class="btn btn-outline-dark mt-auto" href="#" type="button" value="{{product.id}}" id="add-cart">Add to Cart</button></div>
                             </div>
                         </div>
                     </div>
@@ -57,59 +57,23 @@
 
             <div class="col-4 bg-gray-500  text-white bg-light" style="border: 1px solid rgb(208, 208, 208); height:  max-content; max-height: 100vh; top: 100px; padding-right: 4px; z-index: 1050; overflow: auto;">
                 <section class="width-100 text-black p-4" style="">
-                      <div class="list-group">
+                      <div class="list-group" id="list-group">
+                        {% if cart %}
+	                    {% for  cartItemKey, cartItemValue in cart.cart.items %}   
                         <a class="list-group-item list-group-item-action flex-column align-items-start">
-                          <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Tootbrush</h5>
-                            <small class="text-muted">text here</small>
-                          </div>
-                          <!-- <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> -->
+                            <div class="d-flex w-100 justify-content-between">
+                              <h5 class="mb-1"> {{cartItemValue.name}}</h5>
+                              <small class="text-muted">{{cartItemValue.price}}</small>
+                            </div>
+                            <!-- <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> -->
+  
+                            <span class=" text-muted d-flex justify-content-end"><b>qty &nbsp;</b><span class="badge bg-primary rounded-pill">2</span> <span>Total &nbsp;<span>{{cartItemValue.price}}</span> </span></span>
+                          </a>
+                        
 
-                          <span class="d-flex justify-content-end"><b>--Total &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
-                        </a>
-                        <a class="list-group-item list-group-item-action flex-column align-items-start">
-                          <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Bioderm</h5>
-                            <small class="text-muted">text here</small>
-                          </div>
-                          <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
-
-                        </a>
-                        <a class="list-group-item list-group-item-action flex-column align-items-start">
-                          <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Silka</h5>
-                            <small class="text-muted">text here</small>
-                          </div>
-                          <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
-                        </a>
-                        <a class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                              <h5 class="mb-1">Silka</h5>
-                              <small class="text-muted">text here</small>
-                            </div>
-                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
-                          </a>
-                          <a class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                              <h5 class="mb-1">Silka</h5>
-                              <small class="text-muted">text here</small>
-                            </div>
-                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
-                          </a>
-                          <a class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                              <h5 class="mb-1">Silka</h5>
-                              <small class="text-muted">text here</small>
-                            </div>
-                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
-                          </a>
-                          <a class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                              <h5 class="mb-1">Silka</h5>
-                              <small class="text-muted">text here</small>
-                            </div>
-                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
-                          </a>
+                        {% endfor %}
+                        {% endif %}
+                        
                       </div>
 
                       <div class="d-flex justify-content-end" style="margin-top: 100px; padding-right: 20px;">
@@ -138,7 +102,52 @@
         <!-- Bootstrap core JS-->
         <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script> -->
         <!-- Core theme JS-->
+
+<script>
+
+    $(document).on('click', '#add-cart', function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:"{%url 'cart_add' %}",
+            data:{
+                product_id: $(this).val(),
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                action:'post'
+            },
+            success:function(json){
+                console.log(json.cart)
+                document.getElementById('cart-qty').textContent=json.qty
+                let innerHTML=``
+
+                JSON.parse(json.cart).forEach(cartItem => {
+
+                    innerHTML+=`
+                <a class="list-group-item list-group-item-action flex-column align-items-start">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"> ${cartItem.name}</h5>
+                            <small class="text-muted">${cartItem.price}</small>
+                          </div>
+                          <!-- <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> -->
+
+                          <span class=" text-muted d-flex justify-content-end"><b>qty &nbsp;</b><span class="badge bg-primary rounded-pill">2</span> <span>Total &nbsp;<span>${cartItem.price}</span> </span></span>
+                        </a>
+                `
+                    
+                });
+
+                
+                document.getElementById('list-group').innerHTML=innerHTML
+
+            },
+            error:function(xhr,errmsg,err)
+            {
+
+            }
+        })
+    })
+</script>
         
 
-        {% endblock %}
+{% endblock %}
 
