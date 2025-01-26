@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+        
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Shop in style</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+                </div>
+            </div>
+        </header>
+        <!-- Section-->
+        <section class="row py-5">
+            <div class="col-8 container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                   
+    {% if products %}
+	{% for  product in products %}     
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                             <!-- Sale badge-->
+                             <div class="badge bg-success text-white position-absolute" style="top: 0.5rem; right: 0.5rem">{{product.stock_quantity}}</div>
+                            <!-- Product image-->
+                            <img class="card-img-top" src={{product.description}} alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{product.name}}</h5>
+                                   <!-- Product reviews-->
+                                   <div class="d-flex justify-content-center small text-warning mb-2">
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                </div>
+                                    <!-- Product price-->
+                                    ₱{{product.price}}
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to Cart</a></div>
+                            </div>
+                        </div>
+                    </div>
+    {% endfor %}
+
+    {% endif %}
+                    
+                </div>
+            </div>
+
+            <div class="col-4 bg-gray-500  text-white bg-light" style="border: 1px solid rgb(208, 208, 208); height:  max-content; max-height: 100vh; top: 100px; padding-right: 4px; z-index: 1050; overflow: auto;">
+                <section class="width-100 text-black p-4" style="">
+                      <div class="list-group">
+                        <a class="list-group-item list-group-item-action flex-column align-items-start">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Tootbrush</h5>
+                            <small class="text-muted">text here</small>
+                          </div>
+                          <!-- <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> -->
+
+                          <span class="d-flex justify-content-end"><b>--Total &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
+                        </a>
+                        <a class="list-group-item list-group-item-action flex-column align-items-start">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Bioderm</h5>
+                            <small class="text-muted">text here</small>
+                          </div>
+                          <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
+
+                        </a>
+                        <a class="list-group-item list-group-item-action flex-column align-items-start">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Silka</h5>
+                            <small class="text-muted">text here</small>
+                          </div>
+                          <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
+                        </a>
+                        <a class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                              <h5 class="mb-1">Silka</h5>
+                              <small class="text-muted">text here</small>
+                            </div>
+                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
+                          </a>
+                          <a class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                              <h5 class="mb-1">Silka</h5>
+                              <small class="text-muted">text here</small>
+                            </div>
+                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
+                          </a>
+                          <a class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                              <h5 class="mb-1">Silka</h5>
+                              <small class="text-muted">text here</small>
+                            </div>
+                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
+                          </a>
+                          <a class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                              <h5 class="mb-1">Silka</h5>
+                              <small class="text-muted">text here</small>
+                            </div>
+                            <span class="d-flex justify-content-end"><b>--Total  &nbsp;</b><span class="badge bg-primary rounded-pill">2</span></span>
+                          </a>
+                      </div>
+
+                      <div class="d-flex justify-content-end" style="margin-top: 100px; padding-right: 20px;">
+                        <span class="d-flex justify-content-end"><b>Total : P 1,000.00 &nbsp;</b></span>
+
+                      </div>
+                      
+
+                      <div class="d-flex p-4 justify-content-between">
+                        
+
+                        <button type="button" class="btn btn-light">Close</button>
+
+                        <button type="button" class="btn btn-success">Procceed Payment</button>
+                      </div>
+
+                     
+                    <!-- <div class="" style="width: 100%;"><h5 style="margin: auto; width: fit-content;">Shopping cart is Empty! </h5></div> -->
+                </section>
+              </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script> -->
+        <!-- Core theme JS-->
+        
+
+        {% endblock %}
+
