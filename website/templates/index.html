@@ -63,11 +63,22 @@
                         <a class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
                               <h5 class="mb-1"> {{cartItemValue.name}}</h5>
-                              <small class="text-muted">{{cartItemValue.price}}</small>
+                              <div>
+                                <small class="text-muted">{{cartItemValue.price}}</small>
+                                <button class="badge bg-danger rounded-pill"type="button" value="{{cartItemValue.id}}" id="delete-cart">X</button>
+                              </div>
+                              
                             </div>
                             <!-- <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> -->
   
-                            <span class=" text-muted d-flex justify-content-end"><b>qty &nbsp;</b><span class="badge bg-primary rounded-pill">2</span> <span>Total &nbsp;<span>{{cartItemValue.price}}</span> </span></span>
+                            <span class=" text-muted d-flex justify-content-end"><b>qty &nbsp;</b>
+                                
+                                <button class="badge bg-secondary"type="button" value="{{cartItemValue.id}}" id="update-cart-subtract">-</button>
+                                
+                                <span class="badge bg-primary rounded-pill" id="qty_element{{cartItemValue.id}}">{{cartItemValue.p_qty}}</span> 
+                                <button class="badge bg-secondary"type="button" value="{{cartItemValue.id}}" id="update-cart-add">+</button>
+                                
+                                <span>Total &nbsp;<span>{{cartItemValue.total}}</span> </span></span>
                           </a>
                         
 
@@ -76,9 +87,10 @@
                         
                       </div>
 
-                      <div class="d-flex justify-content-end" style="margin-top: 100px; padding-right: 20px;">
-                        <span class="d-flex justify-content-end"><b>Total : P 1,000.00 &nbsp;</b></span>
-
+                      <div class="d-flex justify-content-end" style="margin-top: 100px; padding-right: 20px;" >
+                        {% if cart %}
+                        <span class="d-flex justify-content-end" id="running_total"><b>Total : P {{cart.running_total}} &nbsp;</b></span>
+                        {% endif %}
                       </div>
                       
 
@@ -105,6 +117,41 @@
 
 <script>
 
+    const reloadCart=(json)=>{
+        document.getElementById('cart-qty').textContent=json.qty
+                let innerHTML=``
+
+                JSON.parse(json.cart).forEach(cartItem => {
+
+                    innerHTML+=`
+                <a class="list-group-item list-group-item-action flex-column align-items-start">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"> ${cartItem.name}</h5>
+                            <div>
+                            <small class="text-muted">${cartItem.price}</small>
+                            <button class="badge bg-danger rounded-pill"type="button" value=${cartItem.id} id="delete-cart">X</button>
+                            </div>
+                          </div>
+                          <!-- <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> -->
+
+                          <span class=" text-muted d-flex justify-content-end"><b>qty &nbsp;</b>
+                                ${cartItem.p_qty>1?`<button class="badge bg-secondary"type="button" value=${cartItem.id} id="update-cart-subtract">-</button>`:""}
+                                <span class="badge bg-primary rounded-pill" id="qty_element${cartItem.id}">${cartItem.p_qty}</span> 
+                                <button class="badge bg-secondary"type="button" value=${cartItem.id} id="update-cart-add">+</button>
+                                
+                            <span>Total &nbsp;<span>${cartItem.total}</span> </span></span>
+                        </a>
+                `
+                    
+                });
+
+                
+                document.getElementById('list-group').innerHTML=innerHTML
+
+                document.getElementById('running_total').innerHTML=`<b>Total : P ${json.running_total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} &nbsp;</b>`
+
+    }
+
     $(document).on('click', '#add-cart', function(e){
         e.preventDefault();
         $.ajax({
@@ -115,37 +162,87 @@
                 csrfmiddlewaretoken:'{{csrf_token}}',
                 action:'post'
             },
-            success:function(json){
-                console.log(json.cart)
-                document.getElementById('cart-qty').textContent=json.qty
-                let innerHTML=``
-
-                JSON.parse(json.cart).forEach(cartItem => {
-
-                    innerHTML+=`
-                <a class="list-group-item list-group-item-action flex-column align-items-start">
-                          <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1"> ${cartItem.name}</h5>
-                            <small class="text-muted">${cartItem.price}</small>
-                          </div>
-                          <!-- <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> -->
-
-                          <span class=" text-muted d-flex justify-content-end"><b>qty &nbsp;</b><span class="badge bg-primary rounded-pill">2</span> <span>Total &nbsp;<span>${cartItem.price}</span> </span></span>
-                        </a>
-                `
-                    
-                });
-
+            success:function(inputJson){
+                reloadCart(inputJson)
                 
-                document.getElementById('list-group').innerHTML=innerHTML
-
             },
             error:function(xhr,errmsg,err)
             {
 
             }
         })
-    })
+    });
+
+    $(document).on('click', '#delete-cart', function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:"{%url 'cart_delete' %}",
+            data:{
+                product_id: $(this).val(),
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                action:'post'
+            },
+            success:function(inputJson){
+                reloadCart(inputJson)
+                
+            },
+            error:function(xhr,errmsg,err)
+            {
+
+            }
+        })
+    });
+
+    $(document).on('click', '#update-cart-subtract', function(e){
+        e.preventDefault();
+  
+        $.ajax({
+            type:'POST',
+            url:"{%url 'cart_update' %}",
+            data:{
+                product_id: $(this).val(),
+                
+                new_qty:parseInt(document.getElementById(`qty_element${$(this).val()}`).innerText)-1,
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                action:'post'
+            },
+            success:function(inputJson){
+                reloadCart(inputJson)
+                
+            },
+            error:function(xhr,errmsg,err)
+            {
+
+            }
+        })
+    });
+
+    $(document).on('click', '#update-cart-add', function(e){
+        e.preventDefault();
+     
+        $.ajax({
+            type:'POST',
+            url:"{%url 'cart_update' %}",
+            data:{
+                product_id: $(this).val(),
+                new_qty:parseInt(document.getElementById(`qty_element${$(this).val()}`).innerText)+1,
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                action:'post'
+            },
+            success:function(inputJson){
+                reloadCart(inputJson)
+                
+            },
+            error:function(xhr,errmsg,err)
+            {
+
+            }
+        })
+    });
+
+
+    
 </script>
         
 
