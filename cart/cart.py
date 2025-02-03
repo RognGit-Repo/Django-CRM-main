@@ -18,7 +18,7 @@ class Cart():
         if product_id in self.cart:
             pass
         else:
-            self.cart[product_id]={'id':product.id,'name':product.name,'price': "{:.2f}".format(product.price), 'p_qty':1, 'total':"{:.2f}".format(product.price)}
+            self.cart[product_id]={'id':product.id,'name':product.name,'price': "{:.2f}".format(product.price), 'p_qty':1, 'total':"{:.2f}".format(product.price), 'imageUrl':product.description}
         
         self.session.modified=True
 
@@ -32,7 +32,7 @@ class Cart():
      
         
         if productId in self.cart:
-            self.cart[productId]={'id':self.cart[productId]['id'],'name':self.cart[productId]['name'],'price': self.cart[productId]['price'], 'p_qty':int(new_qty),'total':"{:.2f}".format(float(self.cart[productId]['price'])*int(new_qty))}
+            self.cart[productId]={'id':self.cart[productId]['id'],'name':self.cart[productId]['name'],'price': self.cart[productId]['price'], 'p_qty':int(new_qty),'total':"{:.2f}".format(float(self.cart[productId]['price'])*int(new_qty)),'imageUrl':self.cart[productId]['imageUrl']}
         
         self.session.modified=True
 
